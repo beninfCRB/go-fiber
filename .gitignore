@@ -8,6 +8,11 @@ bin/
 main
 backend
 
+# Hot-reloading (Air) temporary files
+tmp/
+air_errors.log
+
+
 # Local environment configuration (contains sensitive database DSN & SMTP credentials)
 .env
 

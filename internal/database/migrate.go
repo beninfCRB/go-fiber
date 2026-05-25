@@ -4,6 +4,7 @@ import (
 	"backend/internal/models"
 	"log"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -22,6 +23,7 @@ func RunMigrations(db *gorm.DB) {
 
 	seedRoles(db)
 	seedMenus(db)
+	seedSuperAdmin(db)
 }
 
 // seedRoles inserts the three base roles if they don't exist.
@@ -137,4 +139,40 @@ func seedMenus(db *gorm.DB) {
 	}
 
 	log.Println("menus seeded")
+}
+
+// seedSuperAdmin inserts the default superadmin user account if no user with that email exists.
+func seedSuperAdmin(db *gorm.DB) {
+	var count int64
+	db.Model(&models.User{}).Where("email = ?", "superadmin@admin.com").Count(&count)
+	if count > 0 {
+		return
+	}
+
+	var superRole models.RoleModel
+	if err := db.Where("name = ?", models.RoleSuperAdmin).First(&superRole).Error; err != nil {
+		log.Printf("[SEED WARNING] Gagal mencari peran super_admin: %v", err)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte("SuperAdmin123"), bcrypt.DefaultCost)
+	if err != nil {
+		log.Printf("[SEED WARNING] Gagal mengenkripsi kata sandi super_admin: %v", err)
+		return
+	}
+
+	superUser := models.User{
+		Name:       "Super Admin",
+		Email:      "superadmin@admin.com",
+		Password:   string(hashedPassword),
+		IsActive:   true,
+		IsVerified: true,
+		Roles:      []models.RoleModel{superRole},
+	}
+
+	if err := db.Create(&superUser).Error; err != nil {
+		log.Printf("[SEED WARNING] Gagal membuat akun super_admin: %v", err)
+	} else {
+		log.Println("[SEED] Akun super_admin berhasil ditanamkan: superadmin@admin.com / SuperAdmin123")
+	}
 }

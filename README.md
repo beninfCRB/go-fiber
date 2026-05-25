@@ -56,11 +56,28 @@ GORM akan secara otomatis membuat dan melakukan migrasi tabel (`AutoMigrate`) pa
 * `audit_logs`
 
 ### Langkah 3: Menjalankan Aplikasi
+
+#### A. Mode Standar (Tanpa Auto-Reload)
 Jalankan aplikasi menggunakan perintah berikut:
 ```bash
 go run cmd/main.go
 ```
-*Saat pertama kali dinyalakan, aplikasi akan secara otomatis mendeteksi bahwa kunci RSA belum ada, lalu membuat folder `keys/` dan berkas `jwt_private.pem` serta `jwt_public.pem` secara dinamis.*
+
+#### B. Mode Pengembangan (Dengan Auto-Reload / Hot-Reload via Air)
+Untuk mempermudah pengembangan, Anda dapat menggunakan alat **Air** untuk mendeteksi perubahan berkas Go secara otomatis dan melakukan *re-compile* serta *restart* server secara instan:
+
+1. **Instalasi Air** (jika belum terpasang):
+   ```bash
+   go install github.com/air-verse/air@latest
+   ```
+2. **Jalankan Aplikasi dengan Air**:
+   Cukup jalankan perintah berikut di direktori utama proyek:
+   ```bash
+   air
+   ```
+   *Air akan membaca konfigurasi dari `air.toml`, memantau seluruh perubahan berkas `.go`, dan mengabaikan folder runtime seperti `keys/` dan `storage/` secara otomatis.*
+
+*Saat pertama kali dinyalakan (baik menggunakan go run atau air), aplikasi akan mendeteksi jika kunci RSA belum ada, lalu membuat folder `keys/` dan berkas kunci privat-publik secara otomatis.*
 
 Aplikasi akan berjalan pada port default: `http://localhost:8080`.
 
@@ -77,6 +94,17 @@ Aplikasi akan berjalan pada port default: `http://localhost:8080`.
    Kirim permintaan `GET` ke URL verifikasi di atas (dapat dibuka langsung di browser) untuk mengaktifkan akun.
 4. **Login**:
    Setelah email terverifikasi, kirim permintaan `POST` ke `/auth/login` untuk mendapatkan token JWT asimetris (`RS256`) beserta `refresh_token` untuk rotasi sesi.
+
+---
+
+## Akun Bawaan (Default Seed Accounts)
+
+Untuk mempermudah pengujian hak akses penuh, proses migrasi database secara otomatis menanamkan satu akun Super Admin bawaan saat database pertama kali dibuat:
+* **Email**: `superadmin@admin.com`
+* **Password**: `SuperAdmin123`
+* **Status**: Otomatis Aktif & Terverifikasi
+
+Anda dapat langsung melakukan login menggunakan kredensial di atas pada endpoint `/auth/login` untuk mendapatkan token JWT akses Super Admin.
 
 ---
 
