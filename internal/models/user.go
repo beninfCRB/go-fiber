@@ -11,8 +11,8 @@ type User struct {
 	Password             string      `gorm:"not null"`
 	IsActive             bool        `gorm:"default:true"`
 	IsVerified           bool        `gorm:"default:false"`
-	VerificationToken    string      `gorm:"size:255"`
-	ResetToken           string      `gorm:"size:255"`
+	VerificationToken    string      `gorm:"size:255;index"`
+	ResetToken           string      `gorm:"size:255;index"`
 	ResetTokenExpiresAt  *time.Time
 	Roles                []RoleModel `gorm:"many2many:user_roles;"`
 }

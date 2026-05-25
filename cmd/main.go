@@ -43,7 +43,7 @@ func main() {
 	)
 	authService := service.NewAuthService(
 		userRepo, refreshTokenRepo,
-		cfg.JWTSecret, cfg.JWTExpiry, cfg.RefreshTokenExpiry,
+		cfg.JWTPrivateKey, cfg.JWTExpiry, cfg.RefreshTokenExpiry,
 		mailer,
 	)
 	userService := service.NewUserService(userRepo)
@@ -75,7 +75,7 @@ func main() {
 	app.Use(middleware.CORS())
 
 	// 8. Routes
-	routes.Register(app, handlers, cfg.JWTSecret)
+	routes.Register(app, handlers, cfg.JWTPublicKey)
 
 	// 9. Start
 	log.Printf("🚀 Server running on :%s", cfg.Port)

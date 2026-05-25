@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"crypto/rsa"
 	"backend/internal/handler"
 	"backend/internal/helper"
 	"backend/internal/middleware"
@@ -12,13 +13,13 @@ import (
 )
 
 // Register mendaftarkan seluruh route aplikasi ke dalam instance Fiber app.
-func Register(app *fiber.App, h *handler.Handlers, jwtSecret []byte) {
+func Register(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKey) {
 	// Swagger UI & Specification
 	app.Get("/swagger", helper.ServeSwaggerUI)
 	app.Get("/swagger.json", helper.ServeSwaggerJSON)
 
 	registerAuth(app, h.Auth)
-	registerAPI(app, h, jwtSecret)
+	registerAPI(app, h, jwtPublicKey)
 }
 
 // registerAuth — rute publik tanpa verifikasi JWT.
@@ -48,8 +49,8 @@ func registerAuth(app *fiber.App, h *handler.AuthHandler) {
 }
 
 // registerAPI — seluruh rute terproteksi (memerlukan JWT).
-func registerAPI(app *fiber.App, h *handler.Handlers, jwtSecret []byte) {
-	api := app.Group("/api", middleware.JWTMiddleware(jwtSecret))
+func registerAPI(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKey) {
+	api := app.Group("/api", middleware.JWTMiddleware(jwtPublicKey))
 
 	// ── Seluruh pengguna terautentikasi ───────────────────────────────────────
 	api.Get("/profile", h.Auth.Profile)

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crypto/rsa"
 	"backend/internal/dto"
 	"backend/internal/helper"
 	"backend/internal/models"
@@ -25,7 +26,7 @@ var (
 type AuthService struct {
 	userRepo         repository.UserRepository
 	refreshTokenRepo repository.RefreshTokenRepository
-	jwtSecret        []byte
+	jwtPrivateKey    *rsa.PrivateKey
 	jwtExpiry        time.Duration
 	refreshExpiry    time.Duration
 	mailer           *helper.Mailer
@@ -34,7 +35,7 @@ type AuthService struct {
 func NewAuthService(
 	userRepo repository.UserRepository,
 	refreshTokenRepo repository.RefreshTokenRepository,
-	secret []byte,
+	privateKey *rsa.PrivateKey,
 	jwtExpiry time.Duration,
 	refreshExpiry time.Duration,
 	mailer *helper.Mailer,
@@ -42,7 +43,7 @@ func NewAuthService(
 	return &AuthService{
 		userRepo:         userRepo,
 		refreshTokenRepo: refreshTokenRepo,
-		jwtSecret:        secret,
+		jwtPrivateKey:    privateKey,
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
 		mailer:           mailer,
@@ -148,7 +149,7 @@ func (s *AuthService) generateTokenPair(u *models.User) (*dto.TokenResponse, err
 		"exp":   time.Now().Add(s.jwtExpiry).Unix(),
 		"iat":   time.Now().Unix(),
 	}
-	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(s.jwtSecret)
+	accessToken, err := jwt.NewWithClaims(jwt.SigningMethodRS256, claims).SignedString(s.jwtPrivateKey)
 	if err != nil {
 		return nil, err
 	}

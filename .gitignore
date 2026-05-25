@@ -1,0 +1,42 @@
+# Binaries and executable files
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+main
+backend
+
+# Local environment configuration (contains sensitive database DSN & SMTP credentials)
+.env
+
+# Asymmetric RSA keys (Private keys must NEVER be committed to Git!)
+keys/*.pem
+!keys/.gitkeep
+
+# Local storage and simulated runtime logs (contains mails.log and other logs)
+storage/
+*.log
+
+# Dependency directories (only if vendor is used, usually go.sum is tracked)
+vendor/
+
+# IDE and Editor configurations
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

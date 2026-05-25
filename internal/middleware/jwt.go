@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"crypto/rsa"
 	"errors"
 	"strings"
 
@@ -13,7 +14,7 @@ import (
 //   - "name"   string   — user display name
 //   - "role"   string   — highest-privilege role (e.g. "super_admin")
 //   - "roles"  []string — all roles the user has
-func JWTMiddleware(secret []byte) fiber.Handler {
+func JWTMiddleware(publicKey *rsa.PublicKey) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		auth := c.Get("Authorization")
 		tokenStr := strings.TrimPrefix(auth, "Bearer ")
@@ -24,10 +25,10 @@ func JWTMiddleware(secret []byte) fiber.Handler {
 		}
 
 		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			if _, ok := t.Method.(*jwt.SigningMethodRSA); !ok {
 				return nil, errors.New("unexpected signing method")
 			}
-			return secret, nil
+			return publicKey, nil
 		})
 		if err != nil || !token.Valid {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
