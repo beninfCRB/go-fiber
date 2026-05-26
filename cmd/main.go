@@ -45,6 +45,7 @@ func main() {
 		userRepo, refreshTokenRepo,
 		cfg.JWTPrivateKey, cfg.JWTExpiry, cfg.RefreshTokenExpiry,
 		mailer,
+		cfg.AppURL,
 	)
 	userService := service.NewUserService(userRepo)
 	menuService := service.NewMenuService(menuRepo, roleRepo)

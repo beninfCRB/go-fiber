@@ -32,6 +32,7 @@ type Config struct {
 	JWTExpiry           time.Duration
 	RefreshTokenExpiry  time.Duration
 	SMTP                SMTPConfig
+	AppURL              string
 }
 
 var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
@@ -132,6 +133,7 @@ func LoadConfig() (*Config, error) {
 			Password: smtpPass,
 			From:     smtpFrom,
 		},
+		AppURL: getEnv("APP_URL", "http://localhost:8080"),
 	}, nil
 }
 

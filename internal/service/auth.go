@@ -1,11 +1,11 @@
 package service
 
 import (
-	"crypto/rsa"
 	"backend/internal/dto"
 	"backend/internal/helper"
 	"backend/internal/models"
 	"backend/internal/repository"
+	"crypto/rsa"
 	"errors"
 	"fmt"
 	"time"
@@ -30,6 +30,7 @@ type AuthService struct {
 	jwtExpiry        time.Duration
 	refreshExpiry    time.Duration
 	mailer           *helper.Mailer
+	appURL           string
 }
 
 func NewAuthService(
@@ -39,6 +40,7 @@ func NewAuthService(
 	jwtExpiry time.Duration,
 	refreshExpiry time.Duration,
 	mailer *helper.Mailer,
+	appURL string,
 ) *AuthService {
 	return &AuthService{
 		userRepo:         userRepo,
@@ -47,6 +49,7 @@ func NewAuthService(
 		jwtExpiry:        jwtExpiry,
 		refreshExpiry:    refreshExpiry,
 		mailer:           mailer,
+		appURL:           appURL,
 	}
 }
 
@@ -71,7 +74,7 @@ func (s *AuthService) Register(name, email, password string) error {
 	}
 
 	// Kirim email verifikasi
-	verifyUrl := fmt.Sprintf("http://localhost:8080/auth/verify-email?token=%s", vToken)
+	verifyUrl := fmt.Sprintf("%s/auth/verify-email?token=%s", s.appURL, vToken)
 	emailBody := fmt.Sprintf("Halo %s,<br><br>Terima kasih telah mendaftar di platform kami. Silakan klik link berikut untuk memverifikasi email Anda:<br><br><a href='%s' style='background-color:#4CAF50;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;'>Verifikasi Email Saya</a>", name, verifyUrl)
 	_ = s.mailer.SendEmail(email, "Verifikasi Akun Pendaftaran Anda", emailBody)
 
@@ -226,7 +229,7 @@ func (s *AuthService) ForgotPassword(email string) error {
 		return err
 	}
 
-	resetUrl := fmt.Sprintf("http://localhost:8080/auth/reset-password?token=%s", resetToken)
+	resetUrl := fmt.Sprintf("%s/auth/reset-password?token=%s", s.appURL, resetToken)
 	emailBody := fmt.Sprintf("Halo %s,<br><br>Kami menerima permintaan untuk mereset kata sandi Anda. Silakan klik tombol di bawah untuk menyusun kata sandi baru:<br><br><a href='%s' style='background-color:#008CBA;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;'>Reset Kata Sandi Saya</a><br><br>Link ini hanya berlaku selama 1 jam.", u.Name, resetUrl)
 	_ = s.mailer.SendEmail(u.Email, "Reset Kata Sandi Akun Anda", emailBody)
 
