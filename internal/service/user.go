@@ -12,11 +12,11 @@ import (
 )
 
 var (
-	ErrNotFound          = errors.New("user not found")
-	ErrPermissionDenied  = errors.New("permission denied")
-	ErrCannotManageSelf  = errors.New("cannot modify your own account through this endpoint")
-	ErrRoleNotAllowed    = errors.New("you are not allowed to assign this role")
-	ErrEmailTaken        = errors.New("email already taken")
+	ErrNotFound         = errors.New("user not found")
+	ErrPermissionDenied = errors.New("permission denied")
+	ErrCannotManageSelf = errors.New("cannot modify your own account through this endpoint")
+	ErrRoleNotAllowed   = errors.New("you are not allowed to assign this role")
+	ErrEmailTaken       = errors.New("email already taken")
 )
 
 type UserService struct {

@@ -9,10 +9,10 @@ import (
 // ── Request DTOs ─────────────────────────────────────────────────────────────
 
 type CreateUserRequest struct {
-	Name     string       `json:"name"     validate:"required,min=2"`
-	Email    string       `json:"email"    validate:"required,email"`
-	Password string       `json:"password" validate:"required,min=8"`
-	Role     models.Role  `json:"role"     validate:"required,oneof=super_admin admin user"`
+	Name     string      `json:"name"     validate:"required,min=2"`
+	Email    string      `json:"email"    validate:"required,email"`
+	Password string      `json:"password" validate:"required,min=8"`
+	Role     models.Role `json:"role"     validate:"required,oneof=super_admin admin user"`
 }
 
 type UpdateUserRequest struct {

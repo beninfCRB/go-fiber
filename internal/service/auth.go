@@ -57,7 +57,6 @@ func (s *AuthService) GetAppURL() string {
 	return s.appURL
 }
 
-
 func (s *AuthService) Register(name, email, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -152,8 +151,8 @@ func (s *AuthService) generateTokenPair(u *models.User) (*dto.TokenResponse, err
 	claims := jwt.MapClaims{
 		"sub":   u.ID.String(),
 		"name":  u.Name,
-		"role":  primaryRole,        // single role for RoleGuard simplicity
-		"roles": roleNames,          // all roles for fine-grained checks
+		"role":  primaryRole, // single role for RoleGuard simplicity
+		"roles": roleNames,   // all roles for fine-grained checks
 		"exp":   time.Now().Add(s.jwtExpiry).Unix(),
 		"iat":   time.Now().Unix(),
 	}
@@ -207,7 +206,7 @@ func (s *AuthService) VerifyEmail(token string) error {
 	if err != nil {
 		return errors.New("token verifikasi tidak valid")
 	}
-	
+
 	updates := map[string]interface{}{
 		"is_verified":        true,
 		"verification_token": "",
@@ -264,5 +263,3 @@ func (s *AuthService) ResetPassword(token, newPassword string) error {
 	}
 	return s.userRepo.Update(u.ID, updates)
 }
-
-

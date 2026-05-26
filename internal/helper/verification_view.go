@@ -27,7 +27,7 @@ func GetEmailVerificationHTML(isSuccess bool, errMsg string, appURL string) stri
 		data.Title = "Email Berhasil Diverifikasi!"
 		data.Subtitle = "Akun Anda telah diaktifkan sepenuhnya. Silakan masuk kembali menggunakan akun Anda untuk mulai menjelajah platform kami."
 		data.ButtonText = "Masuk Ke Aplikasi"
-		
+
 		buttonUrl := appURL
 		if buttonUrl == "" {
 			buttonUrl = "http://localhost:3000"

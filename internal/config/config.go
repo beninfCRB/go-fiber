@@ -25,14 +25,14 @@ type SMTPConfig struct {
 }
 
 type Config struct {
-	Port                string
-	DBDSN               string
-	JWTPrivateKey       *rsa.PrivateKey
-	JWTPublicKey        *rsa.PublicKey
-	JWTExpiry           time.Duration
-	RefreshTokenExpiry  time.Duration
-	SMTP                SMTPConfig
-	AppURL              string
+	Port               string
+	DBDSN              string
+	JWTPrivateKey      *rsa.PrivateKey
+	JWTPublicKey       *rsa.PublicKey
+	JWTExpiry          time.Duration
+	RefreshTokenExpiry time.Duration
+	SMTP               SMTPConfig
+	AppURL             string
 }
 
 var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)

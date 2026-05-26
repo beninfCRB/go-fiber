@@ -32,7 +32,7 @@ func (m *Mailer) SendEmail(to, subject, body string) error {
 		auth := smtp.PlainAuth("", m.username, m.password, m.host)
 		addr := fmt.Sprintf("%s:%s", m.host, m.port)
 		msg := []byte(fmt.Sprintf("To: %s\r\nSubject: %s\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n%s", to, subject, body))
-		
+
 		err := smtp.SendMail(addr, auth, m.from, []string{to}, msg)
 		if err != nil {
 			log.Printf("[MAILER ERROR] Gagal mengirim email SMTP ke %s: %v", to, err)

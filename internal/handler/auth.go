@@ -153,12 +153,12 @@ func (h *AuthHandler) ForgotPassword(c fiber.Ctx) error {
 	if err := middleware.Validate.Struct(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-	
+
 	if err := h.authService.ForgotPassword(req.Email); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	_ = h.auditLog.LogAction(nil, "FORGOT_PASSWORD_REQUEST", "Permintaan reset password diajukan untuk email: "+req.Email, c.IP(), c.Get("User-Agent"))
-	
+
 	return c.JSON(fiber.Map{"message": "jika email terdaftar, instruksi reset password telah dikirim"})
 }
 
@@ -171,12 +171,12 @@ func (h *AuthHandler) ResetPassword(c fiber.Ctx) error {
 	if err := middleware.Validate.Struct(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
-	
+
 	if err := h.authService.ResetPassword(req.Token, req.NewPassword); err != nil {
 		_ = h.auditLog.LogAction(nil, "RESET_PASSWORD_FAILED", "Reset password gagal dengan token: "+req.Token+" - "+err.Error(), c.IP(), c.Get("User-Agent"))
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 	_ = h.auditLog.LogAction(nil, "RESET_PASSWORD_SUCCESS", "Kata sandi berhasil diperbarui menggunakan token reset", c.IP(), c.Get("User-Agent"))
-	
+
 	return c.JSON(fiber.Map{"message": "kata sandi berhasil diperbarui, silakan login"})
 }

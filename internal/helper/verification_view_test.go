@@ -5,12 +5,11 @@ import (
 	"testing"
 )
 
-
 func TestGetEmailVerificationHTML(t *testing.T) {
 	t.Run("Success Case", func(t *testing.T) {
 		appURL := "http://example.com"
 		html := GetEmailVerificationHTML(true, "", appURL)
-		
+
 		if !strings.Contains(html, "Email Berhasil Diverifikasi!") {
 			t.Errorf("expected success title not found in HTML")
 		}
@@ -28,7 +27,7 @@ func TestGetEmailVerificationHTML(t *testing.T) {
 	t.Run("Success Case with Trailing Slash", func(t *testing.T) {
 		appURL := "http://example.com/"
 		html := GetEmailVerificationHTML(true, "", appURL)
-		
+
 		if !strings.Contains(html, "http://example.com/login") {
 			t.Errorf("expected button URL 'http://example.com/login' to handle trailing slash correctly")
 		}
@@ -37,7 +36,7 @@ func TestGetEmailVerificationHTML(t *testing.T) {
 	t.Run("Failure Case with custom error", func(t *testing.T) {
 		errorMsg := "Token kadaluwarsa"
 		html := GetEmailVerificationHTML(false, errorMsg, "http://example.com")
-		
+
 		if !strings.Contains(html, "Verifikasi Email Gagal") {
 			t.Errorf("expected failure title not found in HTML")
 		}

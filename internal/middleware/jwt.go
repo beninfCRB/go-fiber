@@ -40,7 +40,7 @@ func JWTMiddleware(publicKey *rsa.PublicKey) fiber.Handler {
 
 		c.Locals("userID", claims["sub"])
 		c.Locals("name", claims["name"])
-		c.Locals("role", claims["role"])    // highest role (string)
+		c.Locals("role", claims["role"])   // highest role (string)
 		c.Locals("roles", claims["roles"]) // all roles ([]interface{})
 		return c.Next()
 	}

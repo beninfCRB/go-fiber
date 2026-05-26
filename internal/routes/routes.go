@@ -62,12 +62,13 @@ func registerAPI(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKe
 // registerAdminRoutes — dapat diakses oleh admin DAN super_admin.
 //
 // Menu: User Management
-//   GET    /api/admin/users          → list users
-//   POST   /api/admin/users          → create user (role=user only for admin)
-//   GET    /api/admin/users/:id      → user detail
-//   PATCH  /api/admin/users/:id      → update user info
-//   PATCH  /api/admin/users/:id/active → activate/deactivate
-//   DELETE /api/admin/users/:id      → soft delete
+//
+//	GET    /api/admin/users          → list users
+//	POST   /api/admin/users          → create user (role=user only for admin)
+//	GET    /api/admin/users/:id      → user detail
+//	PATCH  /api/admin/users/:id      → update user info
+//	PATCH  /api/admin/users/:id/active → activate/deactivate
+//	DELETE /api/admin/users/:id      → soft delete
 func registerAdminRoutes(router fiber.Router, h *handler.Handlers) {
 	admin := router.Group("/admin",
 		middleware.RoleGuard(models.RoleAdmin, models.RoleSuperAdmin),
@@ -83,19 +84,22 @@ func registerAdminRoutes(router fiber.Router, h *handler.Handlers) {
 // registerSuperAdminRoutes — hanya dapat diakses oleh super_admin.
 //
 // Menu: User Management (extended)
-//   PATCH /api/super-admin/users/:id/role → change user role
+//
+//	PATCH /api/super-admin/users/:id/role → change user role
 //
 // Menu: Menu Management
-//   GET    /api/super-admin/menus          → flat list with role assignments
-//   GET    /api/super-admin/menus/tree     → nested tree view
-//   GET    /api/super-admin/menus/:id      → single menu detail
-//   POST   /api/super-admin/menus          → create menu
-//   PATCH  /api/super-admin/menus/:id      → update menu
-//   PUT    /api/super-admin/menus/:id/roles → assign roles to menu
-//   DELETE /api/super-admin/menus/:id      → delete menu
+//
+//	GET    /api/super-admin/menus          → flat list with role assignments
+//	GET    /api/super-admin/menus/tree     → nested tree view
+//	GET    /api/super-admin/menus/:id      → single menu detail
+//	POST   /api/super-admin/menus          → create menu
+//	PATCH  /api/super-admin/menus/:id      → update menu
+//	PUT    /api/super-admin/menus/:id/roles → assign roles to menu
+//	DELETE /api/super-admin/menus/:id      → delete menu
 //
 // Menu: Role Management
-//   GET /api/super-admin/roles → list all roles
+//
+//	GET /api/super-admin/roles → list all roles
 func registerSuperAdminRoutes(router fiber.Router, h *handler.Handlers) {
 	sa := router.Group("/super-admin",
 		middleware.RoleGuard(models.RoleSuperAdmin),

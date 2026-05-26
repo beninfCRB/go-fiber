@@ -41,7 +41,7 @@ type MenuResponse struct {
 	ParentID  *uuid.UUID     `json:"parent_id,omitempty"`
 	SortOrder int            `json:"sort_order"`
 	IsActive  bool           `json:"is_active"`
-	Roles     []string       `json:"roles,omitempty"`   // visible in admin/super-admin view
+	Roles     []string       `json:"roles,omitempty"`    // visible in admin/super-admin view
 	Children  []MenuResponse `json:"children,omitempty"` // nested menus
 }
 

@@ -157,4 +157,3 @@ func (h *MenuHandler) DeleteMenu(c fiber.Ctx) error {
 }
 
 // extractRoleNames reads all role names from JWT locals.
-

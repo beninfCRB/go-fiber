@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	ErrMenuNotFound  = errors.New("menu not found")
-	ErrMenuKeyTaken  = errors.New("menu key already exists")
-	ErrRoleNotFound  = errors.New("role not found in the system")
+	ErrMenuNotFound = errors.New("menu not found")
+	ErrMenuKeyTaken = errors.New("menu key already exists")
+	ErrRoleNotFound = errors.New("role not found in the system")
 )
 
 type MenuService struct {
