@@ -2,6 +2,7 @@ package handler
 
 import (
 	"backend/internal/dto"
+	"backend/internal/helper"
 	"backend/internal/middleware"
 	"backend/internal/models"
 	"backend/internal/service"
@@ -127,15 +128,19 @@ func (h *AuthHandler) SuperAdminListRoles(c fiber.Ctx) error {
 // VerifyEmail menangani aktivasi akun pengguna melalui tautan email.
 func (h *AuthHandler) VerifyEmail(c fiber.Ctx) error {
 	token := c.Query("token")
+	c.Set("Content-Type", "text/html")
 	if token == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "token verifikasi diperlukan"})
+		html := helper.GetEmailVerificationHTML(false, "Token verifikasi diperlukan")
+		return c.Status(fiber.StatusBadRequest).SendString(html)
 	}
 	if err := h.authService.VerifyEmail(token); err != nil {
 		_ = h.auditLog.LogAction(nil, "VERIFY_EMAIL_FAILED", "Verifikasi email gagal dengan token: "+token+" - "+err.Error(), c.IP(), c.Get("User-Agent"))
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+		html := helper.GetEmailVerificationHTML(false, err.Error())
+		return c.Status(fiber.StatusBadRequest).SendString(html)
 	}
 	_ = h.auditLog.LogAction(nil, "VERIFY_EMAIL_SUCCESS", "Email berhasil diverifikasi", c.IP(), c.Get("User-Agent"))
-	return c.JSON(fiber.Map{"message": "email berhasil diverifikasi, silakan login"})
+	html := helper.GetEmailVerificationHTML(true, "")
+	return c.Status(fiber.StatusOK).SendString(html)
 }
 
 // ForgotPassword memproses permintaan tautan reset password.

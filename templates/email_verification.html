@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{.Title}} - Verifikasi Akun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #08090e;
+            --card-bg: rgba(17, 19, 31, 0.65);
+            --card-border: rgba(255, 255, 255, 0.07);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            overflow: hidden;
+        }
+
+        body.success {
+            --accent-color: #0acf97;
+            --shadow-glow: rgba(10, 207, 151, 0.3);
+            background-image: radial-gradient(circle at 10% 20%, rgba(10, 207, 151, 0.15) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(108, 92, 231, 0.15) 0%, transparent 50%);
+        }
+
+        body.failure {
+            --accent-color: #ff4757;
+            --shadow-glow: rgba(255, 71, 87, 0.3);
+            background-image: radial-gradient(circle at 10% 20%, rgba(255, 71, 87, 0.15) 0%, transparent 50%), radial-gradient(circle at 90% 80%, rgba(243, 156, 18, 0.1) 0%, transparent 50%);
+        }
+
+        /* Background blur elements */
+        .blur-blob {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.5;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        .blob-1 {
+            background-color: var(--accent-color);
+            top: -50px;
+            left: -50px;
+        }
+
+        .blob-2 {
+            background-color: #6c5ce7;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 20px) scale(1.15); }
+        }
+
+        /* Glassmorphism Card Container */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 460px;
+            padding: 48px 36px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: card-appear 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Glowing top border indicator */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        @keyframes card-appear {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Animated SVG Icon Styling */
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .checkmark__circle {
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: var(--accent-color);
+            fill: none;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            stroke: var(--accent-color);
+            stroke-width: 3;
+            stroke-linecap: round;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+        }
+
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* Copywriting styling */
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 36px;
+            font-weight: 400;
+        }
+
+        /* Interactive Premium Button */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px 28px;
+            border-radius: 12px;
+            background: var(--accent-color);
+            color: #08090e;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 14px var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            outline: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 32px;
+            font-size: 12px;
+            color: rgba(148, 163, 184, 0.4);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Responsive changes */
+        @media (max-width: 480px) {
+            .card {
+                padding: 36px 24px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .description {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="{{.StatusClass}}">
+    <div class="blur-blob blob-1"></div>
+    <div class="blur-blob blob-2"></div>
+
+    <div class="card">
+        {{if .IsSuccess}}
+        <div class="icon-wrapper success">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+        </div>
+        {{else}}
+        <div class="icon-wrapper error">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark__check" fill="none" d="M16 16 36 36 M36 16 16 36"/>
+            </svg>
+        </div>
+        {{end}}
+
+        <h1>{{.Title}}</h1>
+        <p class="description">{{.Subtitle}}</p>
+    </div>
+</body>
+</html>
