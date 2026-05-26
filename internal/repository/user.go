@@ -55,7 +55,6 @@ func (r *gormUserRepo) FindByID(id uuid.UUID) (*models.User, error) {
 	return &u, nil
 }
 
-// List returns paginated users with optional filters.
 func (r *gormUserRepo) List(filter dto.UserFilter) ([]models.User, int64, error) {
 	page := filter.Page
 	if page < 1 {
@@ -68,18 +67,14 @@ func (r *gormUserRepo) List(filter dto.UserFilter) ([]models.User, int64, error)
 
 	query := r.db.Model(&models.User{}).Preload("Roles")
 
-	// Search by name or email
 	if filter.Search != "" {
 		like := "%" + filter.Search + "%"
 		query = query.Where("users.name ILIKE ? OR users.email ILIKE ?", like, like)
 	}
-
-	// Filter by active status
 	if filter.IsActive != nil {
 		query = query.Where("users.is_active = ?", *filter.IsActive)
 	}
 
-	// Filter by role (join role_models)
 	if filter.Role != "" {
 		query = query.
 			Joins("JOIN user_roles ON user_roles.user_id = users.id").
@@ -112,7 +107,6 @@ func (r *gormUserRepo) Delete(id uuid.UUID) error {
 	return r.db.Delete(&models.User{}, "id = ?", id).Error
 }
 
-// AssignRole adds a role to the user (appends, does not replace).
 func (r *gormUserRepo) AssignRole(userID uuid.UUID, role models.Role) error {
 	var roleModel models.RoleModel
 	if err := r.db.Where("name = ?", role).First(&roleModel).Error; err != nil {
@@ -122,7 +116,6 @@ func (r *gormUserRepo) AssignRole(userID uuid.UUID, role models.Role) error {
 		Association("Roles").Append(&roleModel)
 }
 
-// RemoveRole removes a single role from the user.
 func (r *gormUserRepo) RemoveRole(userID uuid.UUID, role models.Role) error {
 	var roleModel models.RoleModel
 	if err := r.db.Where("name = ?", role).First(&roleModel).Error; err != nil {
@@ -132,7 +125,6 @@ func (r *gormUserRepo) RemoveRole(userID uuid.UUID, role models.Role) error {
 		Association("Roles").Delete(&roleModel)
 }
 
-// ReplaceRole clears all roles and assigns the given one (single-role workflow).
 func (r *gormUserRepo) ReplaceRole(userID uuid.UUID, role models.Role) error {
 	var roleModel models.RoleModel
 	if err := r.db.Where("name = ?", role).First(&roleModel).Error; err != nil {
@@ -145,7 +137,6 @@ func (r *gormUserRepo) ReplaceRole(userID uuid.UUID, role models.Role) error {
 	return nil
 }
 
-// HasRole checks if a user has the given role.
 func (r *gormUserRepo) HasRole(userID uuid.UUID, role models.Role) (bool, error) {
 	var count int64
 	err := r.db.Table("user_roles").
@@ -173,7 +164,6 @@ func (r *gormUserRepo) FindByResetToken(token string) (*models.User, error) {
 	return &u, nil
 }
 
-// PagesCount helper (used in service layer).
 func PagesCount(total int64, pageSize int) int {
 	if pageSize == 0 {
 		return 0

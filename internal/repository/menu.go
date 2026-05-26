@@ -14,11 +14,9 @@ type MenuRepository interface {
 	Update(id uuid.UUID, data map[string]interface{}) error
 	Delete(id uuid.UUID) error
 
-	// Role-menu assignments
 	GetRolesForMenu(menuID uuid.UUID) ([]models.RoleModel, error)
 	AssignRoles(menuID uuid.UUID, roles []models.RoleModel) error
 
-	// Fetch menus accessible to specific role names (for menu tree API)
 	FindByRoleNames(roleNames []string) ([]models.Menu, error)
 }
 
@@ -43,7 +41,6 @@ func (r *gormMenuRepo) FindByID(id uuid.UUID) (*models.Menu, error) {
 	return &m, nil
 }
 
-// FindAll returns all menus (flat list) with roles and direct children preloaded.
 func (r *gormMenuRepo) FindAll() ([]models.Menu, error) {
 	var menus []models.Menu
 	err := r.db.Preload("Roles").Preload("Children").
@@ -67,13 +64,11 @@ func (r *gormMenuRepo) GetRolesForMenu(menuID uuid.UUID) ([]models.RoleModel, er
 	return roles, err
 }
 
-// AssignRoles replaces the full set of roles for a menu.
 func (r *gormMenuRepo) AssignRoles(menuID uuid.UUID, roles []models.RoleModel) error {
 	menu := &models.Menu{BaseModel: models.BaseModel{ID: menuID}}
 	return r.db.Model(menu).Association("Roles").Replace(roles)
 }
 
-// FindByRoleNames returns all active menus accessible to the given role names.
 func (r *gormMenuRepo) FindByRoleNames(roleNames []string) ([]models.Menu, error) {
 	if len(roleNames) == 0 {
 		return nil, nil

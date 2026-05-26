@@ -9,11 +9,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// JWTMiddleware validates the Bearer token and populates Locals:
-//   - "userID" float64  — user primary key
-//   - "name"   string   — user display name
-//   - "role"   string   — highest-privilege role (e.g. "super_admin")
-//   - "roles"  []string — all roles the user has
 func JWTMiddleware(publicKey *rsa.PublicKey) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		auth := c.Get("Authorization")

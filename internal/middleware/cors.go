@@ -5,8 +5,6 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/cors"
 )
 
-// CORS returns a CORS middleware with sensible defaults.
-// Adjust AllowOrigins for production.
 func CORS() fiber.Handler {
 	return cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},

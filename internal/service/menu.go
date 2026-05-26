@@ -68,8 +68,6 @@ func buildTree(menus []models.Menu, parentID *uuid.UUID) []dto.MenuResponse {
 
 // ── Service methods ───────────────────────────────────────────────────────────
 
-// GetUserMenuTree returns the menu tree for a user based on their role names.
-// This is what the frontend calls on login to build the sidebar.
 func (s *MenuService) GetUserMenuTree(roleNames []string) ([]dto.MenuResponse, error) {
 	menus, err := s.menuRepo.FindByRoleNames(roleNames)
 	if err != nil {
@@ -78,7 +76,6 @@ func (s *MenuService) GetUserMenuTree(roleNames []string) ([]dto.MenuResponse, e
 	return buildTree(menus, nil), nil
 }
 
-// ListAllMenus returns every menu (flat, with roles), used by super_admin.
 func (s *MenuService) ListAllMenus() ([]dto.MenuResponse, error) {
 	menus, err := s.menuRepo.FindAll()
 	if err != nil {
@@ -91,7 +88,6 @@ func (s *MenuService) ListAllMenus() ([]dto.MenuResponse, error) {
 	return result, nil
 }
 
-// GetMenuTree returns the full menu tree, used by super_admin to see structure.
 func (s *MenuService) GetMenuTree() ([]dto.MenuResponse, error) {
 	menus, err := s.menuRepo.FindAll()
 	if err != nil {
@@ -100,7 +96,6 @@ func (s *MenuService) GetMenuTree() ([]dto.MenuResponse, error) {
 	return buildTree(menus, nil), nil
 }
 
-// GetMenu returns a single menu with its roles.
 func (s *MenuService) GetMenu(id uuid.UUID) (*dto.MenuResponse, error) {
 	m, err := s.menuRepo.FindByID(id)
 	if err != nil {
@@ -110,7 +105,6 @@ func (s *MenuService) GetMenu(id uuid.UUID) (*dto.MenuResponse, error) {
 	return &resp, nil
 }
 
-// CreateMenu creates a new menu item and assigns it to the given roles.
 func (s *MenuService) CreateMenu(req dto.CreateMenuRequest) (*dto.MenuResponse, error) {
 	menu := &models.Menu{
 		Name:      req.Name,
@@ -140,7 +134,6 @@ func (s *MenuService) CreateMenu(req dto.CreateMenuRequest) (*dto.MenuResponse, 
 	return &resp, nil
 }
 
-// UpdateMenu updates mutable fields of a menu.
 func (s *MenuService) UpdateMenu(id uuid.UUID, req dto.UpdateMenuRequest) (*dto.MenuResponse, error) {
 	if _, err := s.menuRepo.FindByID(id); err != nil {
 		return nil, ErrMenuNotFound
@@ -177,7 +170,6 @@ func (s *MenuService) UpdateMenu(id uuid.UUID, req dto.UpdateMenuRequest) (*dto.
 	return &resp, nil
 }
 
-// AssignMenuRoles replaces which roles can access a menu.
 func (s *MenuService) AssignMenuRoles(menuID uuid.UUID, roleKeys []string) (*dto.MenuResponse, error) {
 	if _, err := s.menuRepo.FindByID(menuID); err != nil {
 		return nil, ErrMenuNotFound
@@ -197,7 +189,6 @@ func (s *MenuService) AssignMenuRoles(menuID uuid.UUID, roleKeys []string) (*dto
 	return &resp, nil
 }
 
-// DeleteMenu soft-deletes a menu item.
 func (s *MenuService) DeleteMenu(id uuid.UUID) error {
 	if _, err := s.menuRepo.FindByID(id); err != nil {
 		return ErrMenuNotFound

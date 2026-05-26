@@ -1,18 +1,17 @@
 package routes
 
 import (
-	"crypto/rsa"
 	"backend/internal/handler"
 	"backend/internal/helper"
 	"backend/internal/middleware"
 	"backend/internal/models"
+	"crypto/rsa"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/limiter"
 )
 
-// Register mendaftarkan seluruh route aplikasi ke dalam instance Fiber app.
 func Register(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKey) {
 	// Swagger UI & Specification
 	app.Get("/swagger", helper.ServeSwaggerUI)
@@ -22,9 +21,7 @@ func Register(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKey) 
 	registerAPI(app, h, jwtPublicKey)
 }
 
-// registerAuth — rute publik tanpa verifikasi JWT.
 func registerAuth(app *fiber.App, h *handler.AuthHandler) {
-	// Membatasi request sebanyak 5 kali per 1 menit untuk setiap IP address pada endpoint sensitif
 	authLimiter := limiter.New(limiter.Config{
 		Max:        5,
 		Expiration: 1 * time.Minute,
@@ -48,14 +45,12 @@ func registerAuth(app *fiber.App, h *handler.AuthHandler) {
 	auth.Post("/logout", h.Logout)
 }
 
-// registerAPI — seluruh rute terproteksi (memerlukan JWT).
 func registerAPI(app *fiber.App, h *handler.Handlers, jwtPublicKey *rsa.PublicKey) {
 	api := app.Group("/api", middleware.JWTMiddleware(jwtPublicKey))
 
-	// ── Seluruh pengguna terautentikasi ───────────────────────────────────────
 	api.Get("/profile", h.Auth.Profile)
 	api.Post("/logout-all", h.Auth.LogoutAll)
-	api.Get("/menu", h.Menu.GetMyMenus) // sidebar menu untuk pengguna saat ini
+	api.Get("/menu", h.Menu.GetMyMenus)
 
 	// ── Admin + Super Admin ───────────────────────────────────────────────────
 	registerAdminRoutes(api, h)

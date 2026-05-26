@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// ExtractRequesterInfo retrieves the user UUID and highest role from the Fiber context locals.
 func ExtractRequesterInfo(c fiber.Ctx) (uuid.UUID, models.Role) {
 	idStr, _ := c.Locals("userID").(string)
 	uid, _ := uuid.Parse(idStr)
@@ -15,12 +14,10 @@ func ExtractRequesterInfo(c fiber.Ctx) (uuid.UUID, models.Role) {
 	return uid, models.Role(roleStr)
 }
 
-// ExtractTargetID parses the "id" parameter from the request path into a uuid.UUID.
 func ExtractTargetID(c fiber.Ctx) (uuid.UUID, error) {
 	return uuid.Parse(c.Params("id"))
 }
 
-// ExtractRoleNames collects the primary role and all role names from the JWT claims in the context locals.
 func ExtractRoleNames(c fiber.Ctx) []string {
 	var result []string
 	if r, ok := c.Locals("role").(string); ok && r != "" {

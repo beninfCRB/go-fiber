@@ -19,10 +19,6 @@ var (
 	ErrEmailTaken        = errors.New("email already taken")
 )
 
-// UserService handles CRUD operations with RBAC enforcement.
-// Rules:
-//   - super_admin → can manage admin + user (NOT other super_admins unless self)
-//   - admin       → can only manage users (role=user), cannot touch admins
 type UserService struct {
 	userRepo repository.UserRepository
 }
@@ -33,7 +29,6 @@ func NewUserService(userRepo repository.UserRepository) *UserService {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-// primaryRoleOf returns the highest role of a user model.
 func primaryRoleOf(u *models.User) models.Role {
 	priority := map[models.Role]int{
 		models.RoleSuperAdmin: 3,
@@ -51,20 +46,16 @@ func primaryRoleOf(u *models.User) models.Role {
 	return best
 }
 
-// canManage checks whether the requester can act on the target.
 func canManage(requesterRole models.Role, targetRole models.Role) bool {
 	switch requesterRole {
 	case models.RoleSuperAdmin:
-		// super_admin can manage admin and user, not another super_admin
 		return targetRole != models.RoleSuperAdmin
 	case models.RoleAdmin:
-		// admin can only manage users
 		return targetRole == models.RoleUser
 	}
 	return false
 }
 
-// canAssignRole checks whether the requester is allowed to assign a specific role.
 func canAssignRole(requesterRole models.Role, target models.Role) bool {
 	switch requesterRole {
 	case models.RoleSuperAdmin:
@@ -75,7 +66,6 @@ func canAssignRole(requesterRole models.Role, target models.Role) bool {
 	return false
 }
 
-// toUserResponse converts a models.User to the public DTO.
 func toUserResponse(u *models.User) dto.UserResponse {
 	roles := make([]string, 0, len(u.Roles))
 	for _, r := range u.Roles {
@@ -92,11 +82,7 @@ func toUserResponse(u *models.User) dto.UserResponse {
 
 // ── Service methods ───────────────────────────────────────────────────────────
 
-// ListUsers returns paginated users visible to the requester.
-// admin  → restricted to role=user only.
-// super_admin → can filter any role.
 func (s *UserService) ListUsers(requesterRole models.Role, filter dto.UserFilter) (*dto.UserListResponse, error) {
-	// Admins may only see regular users
 	if requesterRole == models.RoleAdmin {
 		filter.Role = string(models.RoleUser)
 	}
@@ -131,7 +117,6 @@ func (s *UserService) ListUsers(requesterRole models.Role, filter dto.UserFilter
 	}, nil
 }
 
-// GetUser returns a single user if the requester is allowed to view them.
 func (s *UserService) GetUser(requesterRole models.Role, requesterID, targetID uuid.UUID) (*dto.UserResponse, error) {
 	target, err := s.userRepo.FindByID(targetID)
 	if err != nil {
@@ -145,7 +130,6 @@ func (s *UserService) GetUser(requesterRole models.Role, requesterID, targetID u
 	return &resp, nil
 }
 
-// CreateUser creates a new user and assigns the given role.
 func (s *UserService) CreateUser(requesterRole models.Role, req dto.CreateUserRequest) (*dto.UserResponse, error) {
 	if !canAssignRole(requesterRole, req.Role) {
 		return nil, ErrRoleNotAllowed
@@ -172,7 +156,6 @@ func (s *UserService) CreateUser(requesterRole models.Role, req dto.CreateUserRe
 	return &resp, nil
 }
 
-// UpdateUser updates name/email/password of a target user.
 func (s *UserService) UpdateUser(requesterRole models.Role, requesterID, targetID uuid.UUID, req dto.UpdateUserRequest) (*dto.UserResponse, error) {
 	target, err := s.userRepo.FindByID(targetID)
 	if err != nil {
@@ -206,7 +189,6 @@ func (s *UserService) UpdateUser(requesterRole models.Role, requesterID, targetI
 	return &resp, nil
 }
 
-// AssignRole replaces all roles of the target user with a single new role.
 func (s *UserService) AssignRole(requesterRole models.Role, requesterID, targetID uuid.UUID, newRole models.Role) (*dto.UserResponse, error) {
 	if requesterID == targetID {
 		return nil, ErrCannotManageSelf
@@ -231,7 +213,6 @@ func (s *UserService) AssignRole(requesterRole models.Role, requesterID, targetI
 	return &resp, nil
 }
 
-// SetActive activates or deactivates a user.
 func (s *UserService) SetActive(requesterRole models.Role, requesterID, targetID uuid.UUID, active bool) error {
 	if requesterID == targetID {
 		return ErrCannotManageSelf
@@ -246,7 +227,6 @@ func (s *UserService) SetActive(requesterRole models.Role, requesterID, targetID
 	return s.userRepo.SetActive(targetID, active)
 }
 
-// DeleteUser soft-deletes a user.
 func (s *UserService) DeleteUser(requesterRole models.Role, requesterID, targetID uuid.UUID) error {
 	if requesterID == targetID {
 		return ErrCannotManageSelf

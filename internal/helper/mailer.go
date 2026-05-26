@@ -9,7 +9,6 @@ import (
 	"time"
 )
 
-// Mailer adalah utilitas untuk menangani pengiriman email baik via SMTP maupun simulasi log.
 type Mailer struct {
 	host     string
 	port     string
@@ -18,7 +17,6 @@ type Mailer struct {
 	from     string
 }
 
-// NewMailer membuat instance baru dari Mailer dengan menerima konfigurasi SMTP secara langsung.
 func NewMailer(host, port, username, password, from string) *Mailer {
 	return &Mailer{
 		host:     host,
@@ -29,10 +27,7 @@ func NewMailer(host, port, username, password, from string) *Mailer {
 	}
 }
 
-// SendEmail mengirimkan email. Menggunakan SMTP asli jika konfigurasi lengkap,
-// atau melakukan fallback dengan menulis isi email ke file log di folder storage/logs/mails.log.
 func (m *Mailer) SendEmail(to, subject, body string) error {
-	// Jika konfigurasi SMTP lengkap, kirim email asli
 	if m.host != "" && m.port != "" && m.username != "" && m.password != "" {
 		auth := smtp.PlainAuth("", m.username, m.password, m.host)
 		addr := fmt.Sprintf("%s:%s", m.host, m.port)
@@ -41,14 +36,12 @@ func (m *Mailer) SendEmail(to, subject, body string) error {
 		err := smtp.SendMail(addr, auth, m.from, []string{to}, msg)
 		if err != nil {
 			log.Printf("[MAILER ERROR] Gagal mengirim email SMTP ke %s: %v", to, err)
-			// Lanjutkan ke fallback log jika SMTP gagal agar alur program tidak terputus
 		} else {
 			log.Printf("[MAILER] Email SMTP berhasil dikirim ke %s", to)
 			return nil
 		}
 	}
 
-	// Fallback: Tulis ke file log lokal di folder storage/logs
 	logDir := filepath.Join(".", "storage", "logs")
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return fmt.Errorf("gagal membuat direktori log email: %v", err)

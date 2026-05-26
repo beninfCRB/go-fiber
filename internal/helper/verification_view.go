@@ -1,12 +1,12 @@
 package helper
 
 import (
+	"backend/templates"
 	"bytes"
 	"html/template"
-	"backend/templates"
+	"strings"
 )
 
-// VerificationPageData menampung data yang akan di-render ke dalam template HTML verifikasi email.
 type VerificationPageData struct {
 	IsSuccess   bool
 	StatusClass string
@@ -16,11 +16,9 @@ type VerificationPageData struct {
 	ButtonUrl   string
 }
 
-// Inisialisasi template verifikasi sekali saat aplikasi dimulai agar performa render optimal.
 var verificationTemplate = template.Must(template.New("email_verification").Parse(templates.EmailVerificationHTML))
 
-// GetEmailVerificationHTML mengembalikan halaman HTML interaktif dan responsif untuk status verifikasi email.
-func GetEmailVerificationHTML(isSuccess bool, errMsg string) string {
+func GetEmailVerificationHTML(isSuccess bool, errMsg string, appURL string) string {
 	var data VerificationPageData
 	data.IsSuccess = isSuccess
 
@@ -29,7 +27,16 @@ func GetEmailVerificationHTML(isSuccess bool, errMsg string) string {
 		data.Title = "Email Berhasil Diverifikasi!"
 		data.Subtitle = "Akun Anda telah diaktifkan sepenuhnya. Silakan masuk kembali menggunakan akun Anda untuk mulai menjelajah platform kami."
 		data.ButtonText = "Masuk Ke Aplikasi"
-		data.ButtonUrl = "http://localhost:3000/login" // Default URL login
+		
+		buttonUrl := appURL
+		if buttonUrl == "" {
+			buttonUrl = "http://localhost:3000"
+		}
+		if strings.HasSuffix(buttonUrl, "/") {
+			data.ButtonUrl = buttonUrl + "login"
+		} else {
+			data.ButtonUrl = buttonUrl + "/login"
+		}
 	} else {
 		data.StatusClass = "failure"
 		data.Title = "Verifikasi Email Gagal"

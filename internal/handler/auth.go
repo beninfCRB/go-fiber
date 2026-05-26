@@ -129,17 +129,18 @@ func (h *AuthHandler) SuperAdminListRoles(c fiber.Ctx) error {
 func (h *AuthHandler) VerifyEmail(c fiber.Ctx) error {
 	token := c.Query("token")
 	c.Set("Content-Type", "text/html")
+	appURL := h.authService.GetAppURL()
 	if token == "" {
-		html := helper.GetEmailVerificationHTML(false, "Token verifikasi diperlukan")
+		html := helper.GetEmailVerificationHTML(false, "Token verifikasi diperlukan", appURL)
 		return c.Status(fiber.StatusBadRequest).SendString(html)
 	}
 	if err := h.authService.VerifyEmail(token); err != nil {
 		_ = h.auditLog.LogAction(nil, "VERIFY_EMAIL_FAILED", "Verifikasi email gagal dengan token: "+token+" - "+err.Error(), c.IP(), c.Get("User-Agent"))
-		html := helper.GetEmailVerificationHTML(false, err.Error())
+		html := helper.GetEmailVerificationHTML(false, err.Error(), appURL)
 		return c.Status(fiber.StatusBadRequest).SendString(html)
 	}
 	_ = h.auditLog.LogAction(nil, "VERIFY_EMAIL_SUCCESS", "Email berhasil diverifikasi", c.IP(), c.Get("User-Agent"))
-	html := helper.GetEmailVerificationHTML(true, "")
+	html := helper.GetEmailVerificationHTML(true, "", appURL)
 	return c.Status(fiber.StatusOK).SendString(html)
 }
 

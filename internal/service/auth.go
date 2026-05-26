@@ -53,6 +53,11 @@ func NewAuthService(
 	}
 }
 
+func (s *AuthService) GetAppURL() string {
+	return s.appURL
+}
+
+
 func (s *AuthService) Register(name, email, password string) error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
