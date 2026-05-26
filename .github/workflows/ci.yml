@@ -59,3 +59,8 @@ jobs:
       - name: Build Image using Podman
         run: |
           podman build -t fiber-auth-app:latest -f Dockerfile .
+
+      - name: Deploy Local Podman Pods
+        run: |
+          chmod +x ./deploy-local.sh
+          ./deploy-local.sh
