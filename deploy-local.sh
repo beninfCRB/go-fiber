@@ -19,12 +19,12 @@ fi
 mkdir -p ./keys ./storage/logs
 
 # 3. Buat Podman Pod baru
-# Port 8080 diekspos untuk aplikasi Go Fiber
+# Port 8081 diekspos untuk aplikasi Go Fiber
 # Port 5432 diekspos jika ingin mengakses database dari host
 echo "Membuat Podman Pod baru: $POD_NAME..."
 podman pod create \
     --name "$POD_NAME" \
-    -p 8080:8080 \
+    -p 8081:8081 \
     -p 5432:5432
 
 # 4. Jalankan PostgreSQL di dalam Pod
@@ -56,8 +56,8 @@ echo "Menjalankan aplikasi Go Fiber..."
 podman run -d \
     --pod "$POD_NAME" \
     --name "$APP_CONTAINER" \
-    -e PORT=8080 \
-    -e APP_URL="http://localhost:8080" \
+    -e PORT=8081 \
+    -e APP_URL="http://localhost:8081" \
     -e DB_DSN="host=localhost user=postgres password=secret dbname=go_fiber_db port=5432 sslmode=disable TimeZone=Asia/Jakarta" \
     -e JWT_PRIVATE_KEY_PATH="keys/jwt_private.pem" \
     -e JWT_PUBLIC_KEY_PATH="keys/jwt_public.pem" \
@@ -66,5 +66,5 @@ podman run -d \
     "$IMAGE_NAME"
 
 echo "=== Deployment Berhasil! ==="
-echo "Aplikasi berjalan di: http://localhost:8080"
+echo "Aplikasi berjalan di: http://localhost:8081"
 echo "Untuk melihat log aplikasi: podman logs -f $APP_CONTAINER"

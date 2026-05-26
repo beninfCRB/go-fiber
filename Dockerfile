@@ -37,7 +37,7 @@ COPY --from=builder /app/.env.example .env.example
 RUN mkdir -p keys storage/logs
 
 # Port aplikasi
-EXPOSE 8080
+EXPOSE 8081
 
 # Jalankan aplikasi
 CMD ["./main"]

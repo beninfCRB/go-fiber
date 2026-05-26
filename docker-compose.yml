@@ -6,7 +6,7 @@ services:
     container_name: fiber-db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
+      POSTGRES_PASSWORD: beninf123
       POSTGRES_DB: go_fiber_db
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
