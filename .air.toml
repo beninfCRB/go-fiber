@@ -1,0 +1,55 @@
+# Config file for [Air](https://github.com/air-verse/air) to enable live reloading in Go.
+
+# Root directory of the project
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  # Custom build command (builds the main binary to the tmp folder)
+  cmd = "go build -o ./tmp/main ./cmd/main.go"
+  
+  # Binary to execute after successful compilation
+  bin = "./tmp/main"
+  
+  # Customize the execution command (e.g. env variables can be passed here)
+  full_bin = "APP_ENV=dev ./tmp/main"
+  
+  # Watch these file extensions
+  include_ext = ["go", "tpl", "html", "toml", "env"]
+  
+  # Exclude these directories (VERY IMPORTANT: Exclude keys/ and storage/ to prevent infinite rebuild loops!)
+  exclude_dir = ["assets", "tmp", "vendor", "storage", "keys", ".git"]
+  
+  # Watch these specific subdirectories
+  include_dir = ["cmd", "internal"]
+  
+  # Exclude these specific files
+  exclude_file = []
+  
+  # Ignore files that have not changed in 500ms
+  delay = 500
+  
+  # Stop running the old binary if a build error occurs
+  stop_on_error = true
+  
+  # Log file for build output
+  log = "air_errors.log"
+  
+  # Color logs
+  send_interrupt = true
+  kill_delay = 500
+
+[log]
+  # Show time in logs
+  time = true
+
+[color]
+  # Color mapping for different stages
+  main = "magenta"
+  watcher = "cyan"
+  build = "yellow"
+  runner = "green"
+
+[misc]
+  # Clean up tmp directory on exit
+  clean_on_exit = true
