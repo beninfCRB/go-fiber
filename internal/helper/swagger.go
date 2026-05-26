@@ -56,9 +56,6 @@ func ServeSwaggerJSON(c fiber.Ctx) error {
 	c.Set("Content-Type", "application/json")
 	
 	appURL := SwaggerAppURL
-	if appURL == "" {
-		appURL = "http://localhost:8080"
-	}
 	
 	// Ganti URL server secara dinamis sesuai konfigurasi menggunakan regex agar lebih tangguh
 	jsonStr := serverURLRegex.ReplaceAllString(SwaggerJSON, `"url": "`+appURL+`"`)
@@ -75,7 +72,7 @@ const SwaggerJSON = `{
   },
   "servers": [
     {
-      "url": "http://localhost:8081",
+      "url": "http://localhost",
       "description": "Server Pengembangan Lokal"
     }
   ],

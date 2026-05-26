@@ -79,7 +79,7 @@ Untuk mempermudah pengembangan, Anda dapat menggunakan alat **Air** untuk mendet
 
 *Saat pertama kali dinyalakan (baik menggunakan go run atau air), aplikasi akan mendeteksi jika kunci RSA belum ada, lalu membuat folder `keys/` dan berkas kunci privat-publik secara otomatis.*
 
-Aplikasi akan berjalan pada port default: `http://localhost:8080`.
+Aplikasi akan berjalan sesuai konfigurasi di `.env` (variabel `APP_URL` dan `APP_PORT`, default: `http://localhost:8080`).
 
 ---
 
@@ -89,7 +89,7 @@ Aplikasi akan berjalan pada port default: `http://localhost:8080`.
    Kirim permintaan `POST` ke `/auth/register` dengan payload nama, email, dan sandi.
 2. **Ambil Token Verifikasi**:
    Buka file log simulasi email di `storage/logs/mails.log`. Ambil tautan verifikasi yang tercatat di sana, contoh:
-   `http://localhost:8080/auth/verify-email?token=abcdef...`
+   `{APP_URL}/auth/verify-email?token=abcdef...` (nilai `APP_URL` diambil dari `.env`)
 3. **Verifikasi Email**:
    Kirim permintaan `GET` ke URL verifikasi di atas (dapat dibuka langsung di browser) untuk mengaktifkan akun.
 4. **Login**:
@@ -132,5 +132,5 @@ Anda dapat langsung melakukan login menggunakan kredensial di atas pada endpoint
 ## Dokumentasi API (Swagger)
 
 Aplikasi telah dilengkapi dengan Swagger UI dinamis yang dapat diakses langsung pada browser setelah server dijalankan:
-* **Swagger UI**: [http://localhost:8080/swagger](http://localhost:8080/swagger)
-* **Swagger JSON**: [http://localhost:8080/swagger.json](http://localhost:8080/swagger.json)
+* **Swagger UI**: `{APP_URL}/swagger` (nilai `APP_URL` dari `.env`, misal: `http://localhost:8080/swagger`)
+* **Swagger JSON**: `{APP_URL}/swagger.json`

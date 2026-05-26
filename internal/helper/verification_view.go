@@ -4,7 +4,6 @@ import (
 	"backend/templates"
 	"bytes"
 	"html/template"
-	"strings"
 )
 
 type VerificationPageData struct {
@@ -26,17 +25,6 @@ func GetEmailVerificationHTML(isSuccess bool, errMsg string, appURL string) stri
 		data.StatusClass = "success"
 		data.Title = "Email Berhasil Diverifikasi!"
 		data.Subtitle = "Akun Anda telah diaktifkan sepenuhnya. Silakan masuk kembali menggunakan akun Anda untuk mulai menjelajah platform kami."
-		data.ButtonText = "Masuk Ke Aplikasi"
-
-		buttonUrl := appURL
-		if buttonUrl == "" {
-			buttonUrl = "http://localhost:3000"
-		}
-		if strings.HasSuffix(buttonUrl, "/") {
-			data.ButtonUrl = buttonUrl + "login"
-		} else {
-			data.ButtonUrl = buttonUrl + "/login"
-		}
 	} else {
 		data.StatusClass = "failure"
 		data.Title = "Verifikasi Email Gagal"
@@ -45,8 +33,6 @@ func GetEmailVerificationHTML(isSuccess bool, errMsg string, appURL string) stri
 		} else {
 			data.Subtitle = "Kesalahan: " + errMsg + ". Silakan ajukan ulang permintaan verifikasi atau hubungi layanan bantuan kami."
 		}
-		data.ButtonText = "Hubungi Dukungan"
-		data.ButtonUrl = "mailto:support@example.com"
 	}
 
 	var buf bytes.Buffer
