@@ -6,7 +6,7 @@ services:
     container_name: fiber-db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: beninf123
+      POSTGRES_PASSWORD: secret
       POSTGRES_DB: go_fiber_db
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
@@ -28,7 +28,7 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
-      - APP_URL=http://localhost:8080
+      - APP_URL=http://localhost:8081
       - DB_DSN=host=db user=postgres password=secret dbname=go_fiber_db port=5432 sslmode=disable TimeZone=Asia/Jakarta
       - JWT_PRIVATE_KEY_PATH=keys/jwt_private.pem
       - JWT_PUBLIC_KEY_PATH=keys/jwt_public.pem

@@ -21,6 +21,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
+	helper.SwaggerAppURL = cfg.AppURL
 
 	// 2. Database + migrations + seeding
 	db := database.Connect(cfg.DBDSN)

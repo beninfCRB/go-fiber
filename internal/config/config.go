@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"time"
 
+	"strings"
+
 	"github.com/joho/godotenv"
 )
 
@@ -119,8 +121,24 @@ func LoadConfig() (*Config, error) {
 		}
 	}
 
+	port := getEnv("APP_PORT", getEnv("PORT", "8080"))
+	appURL := getEnv("APP_URL", "")
+	if appURL == "" {
+		appURL = "http://localhost:" + port
+	} else {
+		// Jika appURL tidak diawali dengan http:// atau https://, tambahkan http://
+		if !strings.HasPrefix(appURL, "http://") && !strings.HasPrefix(appURL, "https://") {
+			appURL = "http://" + appURL
+		}
+		// Jika appURL tidak mengandung port (tidak ada ':' setelah protocol), tambahkan port-nya
+		strippedURL := strings.TrimPrefix(strings.TrimPrefix(appURL, "https://"), "http://")
+		if !strings.Contains(strippedURL, ":") {
+			appURL = appURL + ":" + port
+		}
+	}
+
 	return &Config{
-		Port:               getEnv("PORT", "8080"),
+		Port:               port,
 		DBDSN:              os.Getenv("DB_DSN"),
 		JWTPrivateKey:      privKey,
 		JWTPublicKey:       pubKey,
@@ -133,7 +151,7 @@ func LoadConfig() (*Config, error) {
 			Password: smtpPass,
 			From:     smtpFrom,
 		},
-		AppURL: getEnv("APP_URL", "http://localhost:8080"),
+		AppURL: appURL,
 	}, nil
 }
 

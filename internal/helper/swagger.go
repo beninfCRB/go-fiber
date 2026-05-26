@@ -1,10 +1,13 @@
 package helper
 
 import (
+	"strings"
+
 	"github.com/gofiber/fiber/v3"
 )
 
-// ServeSwaggerUI mengembalikan halaman HTML Swagger UI yang terhubung ke spesifikasi API kita.
+var SwaggerAppURL string = "http://localhost:8081"
+
 func ServeSwaggerUI(c fiber.Ctx) error {
 	c.Set("Content-Type", "text/html")
 	html := `<!DOCTYPE html>
@@ -49,7 +52,9 @@ func ServeSwaggerUI(c fiber.Ctx) error {
 // ServeSwaggerJSON mengembalikan data JSON mentah untuk dokumen spesifikasi OpenAPI 3.0.
 func ServeSwaggerJSON(c fiber.Ctx) error {
 	c.Set("Content-Type", "application/json")
-	return c.SendString(SwaggerJSON)
+	// Ganti URL server secara dinamis sesuai konfigurasi
+	jsonStr := strings.Replace(SwaggerJSON, `"url": "http://localhost:8081"`, `"url": "`+SwaggerAppURL+`"`, 1)
+	return c.SendString(jsonStr)
 }
 
 // SwaggerJSON adalah spesifikasi OpenAPI 3.0 lengkap untuk sistem Auth, RBAC, dan Menu ini.
@@ -62,7 +67,7 @@ const SwaggerJSON = `{
   },
   "servers": [
     {
-      "url": "http://localhost:8080",
+      "url": "http://localhost:8081",
       "description": "Server Pengembangan Lokal"
     }
   ],

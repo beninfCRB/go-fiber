@@ -6,6 +6,11 @@ POD_NAME="fiber-pod"
 DB_CONTAINER="fiber-db"
 APP_CONTAINER="fiber-app"
 IMAGE_NAME="localhost/fiber-app:latest"
+SMTP_HOST="smtp.gmail.com"
+SMTP_PORT="587"
+SMTP_USER="beninf10@gmail.com"
+SMTP_PASS="wlkt gaeb ezbh dkqj"
+SMTP_FROM="beninf10@gmail.com"
 
 echo "=== Memulai Deployment Lokal dengan Podman ==="
 
