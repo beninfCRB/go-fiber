@@ -8,7 +8,7 @@ import (
 
 var serverURLRegex = regexp.MustCompile(`"url":\s*"[^"]*"`)
 
-var SwaggerAppURL string = "http://localhost:8081"
+var SwaggerAppURL string
 
 func ServeSwaggerUI(c fiber.Ctx) error {
 	c.Set("Content-Type", "text/html")
@@ -54,8 +54,14 @@ func ServeSwaggerUI(c fiber.Ctx) error {
 // ServeSwaggerJSON mengembalikan data JSON mentah untuk dokumen spesifikasi OpenAPI 3.0.
 func ServeSwaggerJSON(c fiber.Ctx) error {
 	c.Set("Content-Type", "application/json")
+	
+	appURL := SwaggerAppURL
+	if appURL == "" {
+		appURL = "http://localhost:8080"
+	}
+	
 	// Ganti URL server secara dinamis sesuai konfigurasi menggunakan regex agar lebih tangguh
-	jsonStr := serverURLRegex.ReplaceAllString(SwaggerJSON, `"url": "`+SwaggerAppURL+`"`)
+	jsonStr := serverURLRegex.ReplaceAllString(SwaggerJSON, `"url": "`+appURL+`"`)
 	return c.SendString(jsonStr)
 }
 
