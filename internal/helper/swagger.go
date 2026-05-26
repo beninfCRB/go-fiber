@@ -1,10 +1,12 @@
 package helper
 
 import (
-	"strings"
+	"regexp"
 
 	"github.com/gofiber/fiber/v3"
 )
+
+var serverURLRegex = regexp.MustCompile(`"url":\s*"[^"]*"`)
 
 var SwaggerAppURL string = "http://localhost:8081"
 
@@ -52,8 +54,8 @@ func ServeSwaggerUI(c fiber.Ctx) error {
 // ServeSwaggerJSON mengembalikan data JSON mentah untuk dokumen spesifikasi OpenAPI 3.0.
 func ServeSwaggerJSON(c fiber.Ctx) error {
 	c.Set("Content-Type", "application/json")
-	// Ganti URL server secara dinamis sesuai konfigurasi
-	jsonStr := strings.Replace(SwaggerJSON, `"url": "http://localhost:8081"`, `"url": "`+SwaggerAppURL+`"`, 1)
+	// Ganti URL server secara dinamis sesuai konfigurasi menggunakan regex agar lebih tangguh
+	jsonStr := serverURLRegex.ReplaceAllString(SwaggerJSON, `"url": "`+SwaggerAppURL+`"`)
 	return c.SendString(jsonStr)
 }
 
