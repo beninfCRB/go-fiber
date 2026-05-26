@@ -57,6 +57,7 @@ podman run -d \
     --pod "$POD_NAME" \
     --name "$APP_CONTAINER" \
     -e PORT=8080 \
+    -e APP_URL="http://localhost:8080" \
     -e DB_DSN="host=localhost user=postgres password=secret dbname=go_fiber_db port=5432 sslmode=disable TimeZone=Asia/Jakarta" \
     -e JWT_PRIVATE_KEY_PATH="keys/jwt_private.pem" \
     -e JWT_PUBLIC_KEY_PATH="keys/jwt_public.pem" \
