@@ -56,11 +56,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Build Image using Podman
+      - name: Build Image using Docker
         run: |
-          podman build -t fiber-auth-app:latest -f Dockerfile .
+          docker build -t fiber-auth-app:latest -f Dockerfile .
 
-      - name: Deploy Local Podman Pods
+      - name: Deploy Local Docker
         run: |
           chmod +x ./deploy-local.sh
           ./deploy-local.sh
