@@ -4,6 +4,7 @@ import (
 	"backend/templates"
 	"bytes"
 	"html/template"
+	"strings"
 )
 
 type VerificationPageData struct {
@@ -21,13 +22,19 @@ func GetEmailVerificationHTML(isSuccess bool, errMsg string, appURL string) stri
 	var data VerificationPageData
 	data.IsSuccess = isSuccess
 
+	// Normalisasi URL: hapus trailing slash lalu tambahkan /login
+	baseURL := strings.TrimRight(appURL, "/")
+	data.ButtonUrl = baseURL + "/login"
+
 	if isSuccess {
 		data.StatusClass = "success"
 		data.Title = "Email Berhasil Diverifikasi!"
 		data.Subtitle = "Akun Anda telah diaktifkan sepenuhnya. Silakan masuk kembali menggunakan akun Anda untuk mulai menjelajah platform kami."
+		data.ButtonText = "Masuk ke Akun"
 	} else {
 		data.StatusClass = "failure"
 		data.Title = "Verifikasi Email Gagal"
+		data.ButtonText = "Kembali ke Beranda"
 		if errMsg == "" {
 			data.Subtitle = "Tautan verifikasi yang Anda gunakan tidak valid, telah kedaluwarsa, atau sudah pernah digunakan sebelumnya."
 		} else {
