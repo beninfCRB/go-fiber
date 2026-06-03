@@ -25,15 +25,20 @@ services:
       dockerfile: Dockerfile
     container_name: fiber-app
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      - PORT=8080
+      - PORT=8081
       - APP_URL=http://localhost:8081
       - DB_DSN=host=db user=postgres password=secret dbname=go_fiber_db port=5432 sslmode=disable TimeZone=Asia/Jakarta
       - JWT_PRIVATE_KEY_PATH=keys/jwt_private.pem
       - JWT_PUBLIC_KEY_PATH=keys/jwt_public.pem
       - JWT_EXPIRY_MINUTES=15
       - REFRESH_EXPIRY_DAYS=7
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-}
+      - SMTP_PASS=${SMTP_PASS:-}
+      - SMTP_FROM=${SMTP_FROM:-}
     volumes:
       - ./keys:/app/keys
       - ./storage:/app/storage
