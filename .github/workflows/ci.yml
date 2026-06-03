@@ -58,7 +58,7 @@ jobs:
 
       - name: Build Image using Docker
         run: |
-          docker build -t fiber-auth-app:latest -f Dockerfile .
+          docker build -t go-fiber-app:latest -f Dockerfile .
 
       - name: Deploy Local Docker
         run: |
