@@ -54,9 +54,9 @@ func ServeSwaggerUI(c fiber.Ctx) error {
 // ServeSwaggerJSON mengembalikan data JSON mentah untuk dokumen spesifikasi OpenAPI 3.0.
 func ServeSwaggerJSON(c fiber.Ctx) error {
 	c.Set("Content-Type", "application/json")
-	
+
 	appURL := SwaggerAppURL
-	
+
 	// Ganti URL server secara dinamis sesuai konfigurasi menggunakan regex agar lebih tangguh
 	jsonStr := serverURLRegex.ReplaceAllString(SwaggerJSON, `"url": "`+appURL+`"`)
 	return c.SendString(jsonStr)
